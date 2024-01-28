@@ -3,14 +3,13 @@ import Header from "./Header";
 import { checkValidData } from "../utils/validate";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { BG_URL } from "../utils/constants";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const name = useRef(null);
@@ -42,13 +41,10 @@ const Login = () => {
         displayName: displayName,
        })
       );
-      navigate("/browse");
     })
     .catch((error) => {
       setErrorMessage(error.message);
     });
-    console.log(user);
-    navigate("/browse")
   })
   .catch((error) => {
     const errorCode = error.code;
@@ -62,8 +58,6 @@ const Login = () => {
     signInWithEmailAndPassword(auth, email.current.value, password.current.value)
     .then((userCredential) => {
       const user = userCredential.user;
-      console.log(user);
-      navigate("/browse")
     })
     .catch((error) => {
       const errorCode = error.code;
@@ -82,7 +76,7 @@ const Login = () => {
         <Header />
    <div className="absolute">
          <img 
-        src="https://assets.nflxext.com/ffe/siteui/vlv3/9134db96-10d6-4a64-a619-a21da22f8999/a449fabb-05e4-4c8a-b062-b0bec7d03085/IN-en-20240115-trifectadaily-perspective_alpha_website_large.jpg"
+        src={BG_URL}
         alt ="BG_URL"
         />
         </div>
