@@ -15,4 +15,6 @@ export const LOGO =
         "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZTY0ZDQ3MDcwZWQ2MDc1NTNmMGYzNDA2NDVmMmMwNCIsInN1YiI6IjY1YjUzY2IwNmUwZDcyMDE2MzQ3NTZjZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ce3f8CRZTtMDQE7DEXAnJRN9zlFnmlj7foKJ2zXbvCo"
       },
     };
+
+    export const IMG_CDN_URL = "https://image.tmdb.org/t/p/w780";
      
