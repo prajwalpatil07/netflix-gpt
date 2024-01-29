@@ -11,8 +11,7 @@ export const LOGO =
       method: "GET",
       headers: {
         accept: "application/json",
-        Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjZTY0ZDQ3MDcwZWQ2MDc1NTNmMGYzNDA2NDVmMmMwNCIsInN1YiI6IjY1YjUzY2IwNmUwZDcyMDE2MzQ3NTZjZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.Ce3f8CRZTtMDQE7DEXAnJRN9zlFnmlj7foKJ2zXbvCo"
+        Authorization: "Bearer " + process.env.REACT_APP_TMDB_KEY,
       },
     };
 
@@ -23,3 +22,6 @@ export const LOGO =
       {identifier: "hindi", name:"Hindi"},
       {identifier: "spanish", name:"Spanish"},
     ];
+
+
+   export const OPENAI_KEY = process.env.REACT_APP_OPENAI_KEY;
