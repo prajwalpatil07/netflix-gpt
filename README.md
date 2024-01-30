@@ -38,6 +38,14 @@
 - GPT Search Page
 - GPT Search Bar
 - Multi-language Feature
+- Get Open AI api kay
+- Gpt Search API Call
+- Fetched gptMovieSuggestions from TMDB
+- Created gptSlice added data
+- Reused Movie List Component to make Movie Suggestion Container
+- Memoization
+- Added .env file
+- Added .env file to gitignore
 
 # Features
 - Login / Sign up
