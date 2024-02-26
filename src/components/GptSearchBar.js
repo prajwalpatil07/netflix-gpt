@@ -1,68 +1,75 @@
-import { useDispatch, useSelector } from "react-redux";
-import lang from "../utils/languageConstants";
-import { useRef } from "react";
-import openai from "../utils/openai";
+import { useRef, useState } from "react";
+import genAI from "../utils/geminiAI";
 import { API_OPTIONS } from "../utils/constants";
-import {addGptMovieResult} from "../utils/gptSlice";
+import { SEARCH_MOVIES } from "../utils/constants";
+import { useDispatch } from "react-redux";
+import { addGptMovieResult } from "../utils/gptSlice";
+import Spinner from "./Spinner";
 
 const GptSearchBar = () => {
-  const dispatch = useDispatch();
-  const langkey = useSelector(store => store.config.lang);
+  const [isLoading, setIsLoading] = useState(false);
   const searchText = useRef(null);
+  const dispatch = useDispatch();
 
-  const searchMovieTMDB = async (movie) => {
-    const data = await fetch(
-      "https://api.themoviedb.org/3/search/movie?query=" +
-      movie +
-      "&include_adult&page=1",
-      API_OPTIONS
-    );
-    const json = await data.json()
+  const getMovieSearchRecommendations = async (movieName) => {
+    const movieData = await fetch(SEARCH_MOVIES + movieName, API_OPTIONS);
+
+    const json = await movieData.json();
 
     return json.results;
   };
 
   const handleGptSearchClick = async () => {
+    setIsLoading(true);
 
-    const gptQuery = "Act as a Movie Recommendation System and suggest some movies for the query : " + 
-    searchText.current.value + 
-    ". only gives me names of 5 movies, comma separated like the example result given ahead. Example Result: Gadar, Sholay, Don, GOlmaal, Koi Mil Gaya";
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const gptQuery =
+      "Act as a movie recommendation system and suggest movies for the query : " +
+      searchText.current.value +
+      ". Only give me names for 5 movies, comma separated like the example result given ahead. Example Result: Shiddat, 12th Fail, Mr. Robot, The Shawshank Redemption, Spirited Away";
 
-   const gptResults = await openai.chat.completions.create({
-      messages: [{ role: "user", content: gptQuery }],
-      model: "gpt-3.5-turbo",
-    });
+    const gptResults = await model.generateContent(gptQuery);
+    const response = await gptResults.response.text();
 
-    if(!gptResults.choices){
-      // TODO: write Error Handling
-    }
+    const gptMovies = response.split(",");
 
-    const gptMovies = gptResults.choices?.[0]?.message?.content.split(",");
-
-    const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
-
-    const tmdbResults = await Promise.all(promiseArray);
+    const movieData = gptMovies.map((movie) =>
+      getMovieSearchRecommendations(movie)
+    );
+    const searchResults = await Promise.all(movieData);
 
     dispatch(
-      addGptMovieResult({movieNames: gptMovies, movieResults: tmdbResults})
-      );
+      addGptMovieResult({ movieNames: gptMovies, movieResults: searchResults })
+    );
+
+    setIsLoading(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await handleGptSearchClick();
   };
 
   return (
-    <div className="pt-[35%] md:pt-[10%] flex justify-center">
-      <form className="w-full md:w-1/2 bg-black grid grid-cols-12" 
-      onSubmit={(e) => e.preventDefault()}
+    <div className="pt-[32%] md:pt-[5%] flex justify-center">
+      <form
+        action=""
+        className="w-full m-2 md:w-1/2 bg-slate-700 grid grid-cols-12 rounded-lg"
+        onSubmit={handleSubmit}
       >
-        <input 
-        ref={searchText}
-        type="text" 
-        className="p-4 m-4 col-span-9" 
-        placeholder={lang[langkey].gptSearchPlaceholder}
+        <input
+          type="text"
+          placeholder="Gemini-AI powered search for movies or genres"
+          ref={searchText}
+          className="py-2 px-4 m-2 border border-black rounded-lg col-span-9"
         />
-        <button className="col-span-3 m-4 py-2 px-4 bg-red-700 text-white rounded-lg"
-        onClick={handleGptSearchClick}>
-          {lang[langkey].search}
-          </button>
+        <button
+          className="py-2 px-4 m-2 my-2 rounded-lg bg-[#E50914] text-white col-span-3"
+          onClick={handleGptSearchClick}
+          disabled={isLoading}
+        >
+          {isLoading ? <Spinner /> : "Search"}
+        </button>
       </form>
     </div>
   );

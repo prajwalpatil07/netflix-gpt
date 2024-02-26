@@ -15,6 +15,8 @@ export const LOGO =
       },
     };
 
+    export const SEARCH_MOVIES = "https://api.themoviedb.org/3/search/movie?query=";
+
     export const IMG_CDN_URL = "https://image.tmdb.org/t/p/w780";
      
     export const SUPPORTED_LANGUAGES = [
@@ -24,4 +26,4 @@ export const LOGO =
     ];
 
 
-   export const OPENAI_KEY = process.env.REACT_APP_OPENAI_KEY;
+   export const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;

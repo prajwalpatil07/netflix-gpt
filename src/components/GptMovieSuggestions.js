@@ -1,23 +1,23 @@
 import { useSelector } from "react-redux";
 import MovieList from "./MovieList";
 
-
 const GptMovieSuggestions = () => {
+  const { movieResults, movieNames } = useSelector((store) => store.gpt);
+  if (!movieNames) return null;
 
-const {movieResults, movieNames} = useSelector((store)=> store.gpt);
-if(!movieNames) return null;
-
-  return <div className="p-4 m-4 bg-black text-white bg-opacity-90">
+  return (
+    <div className="mt-12 text-white px-4 py-2 bg-gray-900 bg-opacity-90">
       <div>
         {movieNames.map((movieName, index) => (
-        <MovieList 
-        key={movieName} 
-        title={movieName} 
-        movies ={movieResults[index]} 
-        />
+          <MovieList
+            key={movieName.id}
+            title={movieName}
+            movies={movieResults[index]}
+          />
         ))}
-        </div>
-    </div>;
+      </div>
+    </div>
+  );
 };
 
 export default GptMovieSuggestions;
